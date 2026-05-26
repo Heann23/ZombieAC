@@ -1,0 +1,10 @@
+name: ZombieAC
+description: $description
+version: '${version}'
+
+main: me.herry.zombieAC.ZombieAC
+api-version: '1.21.11'
+load: POSTWORLD
+commands:
+  test:
+    usage: /test <spawn|tp>
