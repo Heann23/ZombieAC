@@ -1,8 +1,9 @@
 package me.herry.zombieAC.events;
 
-import me.herry.zombieAC.MUTATION_TYPE;
-import me.herry.zombieAC.MutationHandler;
+import me.herry.zombieAC.mutation.MutationType;
+import me.herry.zombieAC.mutation.MutationHandler;
 import me.herry.zombieAC.ZombieAC;
+import me.herry.zombieAC.mutation.types.ParasiteMutation;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -75,20 +76,20 @@ public class OnSpawn implements Listener {
 
         MutationHandler mh = new MutationHandler(zombie);
         // 이미 타입이 정해져 있으면 리턴
-        if (mh.getMutation() != MUTATION_TYPE.NORMAL) return;
+        if (mh.getMutation() != MutationType.NORMAL) return;
 
-        MUTATION_TYPE mutation = MUTATION_TYPE.getRandom();
-        mh.setMutation(mutation);
+        MutationType mutation = MutationType.getRandom();
+        mh.setAndApplyMutation(mutation);
 
-        if (mutation == MUTATION_TYPE.JOCKEY && !zombie.isAdult()) {  // 애기좀비가 JOCKEY 면 히트 박스가 작아서 못 때리는 버그 해결
+        if (mutation == MutationType.JOCKEY && !zombie.isAdult()) {  // 애기좀비가 JOCKEY 면 히트 박스가 작아서 못 때리는 버그 해결
             zombie.setAdult();
-        } else if (mutation == MUTATION_TYPE.TANKER) {
+        } else if (mutation == MutationType.TANKER) {
             EntityEquipment equipment = zombie.getEquipment();
             equipment.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
 
             equipment.setChestplateDropChance(0.1f);
-        } else if (mutation == MUTATION_TYPE.PARASITE && zombie.getEntitySpawnReason() != CreatureSpawnEvent.SpawnReason.SLIME_SPLIT) {
-            mh.setSplitTier(3);
+        } else if (mutation == MutationType.PARASITE && zombie.getEntitySpawnReason() != CreatureSpawnEvent.SpawnReason.SLIME_SPLIT) {
+            ParasiteMutation.setSplitTier(zombie, 3);
         }
     }
 

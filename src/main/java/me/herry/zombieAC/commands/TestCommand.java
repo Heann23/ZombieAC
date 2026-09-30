@@ -1,7 +1,8 @@
 package me.herry.zombieAC.commands;
 
-import me.herry.zombieAC.MUTATION_TYPE;
-import me.herry.zombieAC.MutationHandler;
+import me.herry.zombieAC.mutation.MutationType;
+import me.herry.zombieAC.mutation.MutationHandler;
+import me.herry.zombieAC.mutation.types.ParasiteMutation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -23,10 +24,10 @@ public class TestCommand implements TabExecutor {
 
         if (args.length != 2) return false;
 
-        MUTATION_TYPE mt;
+        MutationType mt;
 
         try {
-            mt = MUTATION_TYPE.valueOf(args[1]);
+            mt = MutationType.valueOf(args[1]);
         } catch (IllegalArgumentException e) {
             player.sendMessage(ChatColor.RED + "Invalid mutation type");
             player.sendMessage(ChatColor.RED + e.getMessage());
@@ -37,8 +38,8 @@ public class TestCommand implements TabExecutor {
             Location loc = player.getLocation();
             loc.getWorld().spawn(loc, Zombie.class, (zombie -> {
                 MutationHandler mh = new MutationHandler(zombie);
-                mh.setMutation(mt);
-                mh.setSplitTier(3);
+                mh.setAndApplyMutation(mt);
+                ParasiteMutation.setSplitTier(zombie, 3);
             }), CreatureSpawnEvent.SpawnReason.NATURAL);
 
             player.sendMessage(ChatColor.GREEN + "Spawned mutation zombie " + ChatColor.YELLOW + "TYPE: " + mt.name());
@@ -49,6 +50,7 @@ public class TestCommand implements TabExecutor {
                 MutationHandler mh = new MutationHandler(zombie);
 
                 if (mh.getMutation() == mt) zombie.teleport(player.getLocation());
+
             }
         }
 
@@ -62,8 +64,8 @@ public class TestCommand implements TabExecutor {
 
         if (args.length == 1) return List.of("spawn", "tp");
         else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("spawn")) return List.of("NORMAL", "BOOMER", "JOCKEY", "SHOOTER", "JUMPER", "SPRINT", "TANKER", "PARASITE");
-            if (args[0].equalsIgnoreCase("tp")) return List.of("NORMAL", "BOOMER", "JOCKEY", "SHOOTER", "JUMPER", "SPRINT", "TANKER", "PARASITE");
+            if (args[0].equalsIgnoreCase("spawn")) return List.of("NORMAL", "BOOMER", "JOCKEY", "SHOOTER", "JUMPER", "SPRINTER", "TANKER", "PARASITE");
+            if (args[0].equalsIgnoreCase("tp")) return List.of("NORMAL", "BOOMER", "JOCKEY", "SHOOTER", "JUMPER", "SPRINTER", "TANKER", "PARASITE");
         }
 
         return List.of();

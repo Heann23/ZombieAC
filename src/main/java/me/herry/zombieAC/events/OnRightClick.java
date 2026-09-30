@@ -1,7 +1,8 @@
 package me.herry.zombieAC.events;
 
-import me.herry.zombieAC.MUTATION_TYPE;
-import me.herry.zombieAC.MutationHandler;
+import me.herry.zombieAC.mutation.MutationType;
+import me.herry.zombieAC.mutation.MutationHandler;
+import me.herry.zombieAC.mutation.types.ParasiteMutation;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,8 +25,8 @@ public class OnRightClick implements Listener {
         if (!(entity instanceof Zombie zombie)) return;
 
         MutationHandler mh = new MutationHandler(zombie);
-        MUTATION_TYPE mt = mh.getMutation();
+        MutationType mt = mh.getMutation();
         player.sendMessage(ChatColor.YELLOW + "Mutation Type: " + mt);
-        if (mt == MUTATION_TYPE.PARASITE) player.sendMessage(ChatColor.YELLOW + "Parasite Tier: " + mh.getSplitTier());
+        if (mt == MutationType.PARASITE) player.sendMessage(ChatColor.YELLOW + "Parasite Tier: " + ParasiteMutation.getSplitTier(zombie));
     }
 }

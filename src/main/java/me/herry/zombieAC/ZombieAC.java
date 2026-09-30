@@ -2,6 +2,8 @@ package me.herry.zombieAC;
 
 import me.herry.zombieAC.commands.TestCommand;
 import me.herry.zombieAC.events.*;
+import me.herry.zombieAC.mutation.MutationKeys;
+import me.herry.zombieAC.mutation.MutationRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,14 +11,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Objects;
 
 public final class ZombieAC extends JavaPlugin {
-    private static ZombieAC main;
-
-    private ZombieAC(){}
+    private static ZombieAC instance;
+    private MutationKeys mutationKeys;
+    private MutationRegistry mutationRegistry;
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        main = this;
+        instance = this;
+        mutationKeys = new MutationKeys(this);
+        mutationRegistry = new MutationRegistry();
+
         this.events();
         this.commands();
 
@@ -25,18 +29,29 @@ public final class ZombieAC extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        instance = null;
 
         Bukkit.getConsoleSender().sendMessage(String.valueOf(ChatColor.GREEN) + "ZombieAC is now unloading...");
     }
 
+
+    public MutationKeys getMutationKeys() {
+        return mutationKeys;
+    }
+
+    public MutationRegistry getMutationRegistry() {
+        return mutationRegistry;
+    }
+
+
     private void events() {
+        this.getServer().getPluginManager().registerEvents(new OnAttackPlayer(), this);
+        this.getServer().getPluginManager().registerEvents(new OnCombust(), this);
+        this.getServer().getPluginManager().registerEvents(new OnDeath(), this);
+        this.getServer().getPluginManager().registerEvents(new OnFallDamage(), this);
+        this.getServer().getPluginManager().registerEvents(new OnJoin(), this);
         this.getServer().getPluginManager().registerEvents(new OnSpawn(), this);
         this.getServer().getPluginManager().registerEvents(new OnRightClick(), this);
-        this.getServer().getPluginManager().registerEvents(new OnCombust(), this);
-        this.getServer().getPluginManager().registerEvents(new OnDamage(), this);
-        this.getServer().getPluginManager().registerEvents(new OnDeath(), this);
-        this.getServer().getPluginManager().registerEvents(new ElytraBanListener(), this);
     }
 
     private void commands() {
@@ -44,6 +59,6 @@ public final class ZombieAC extends JavaPlugin {
     }
 
     public static ZombieAC getInstance(){
-        return main;
+        return instance;
     }
 }
